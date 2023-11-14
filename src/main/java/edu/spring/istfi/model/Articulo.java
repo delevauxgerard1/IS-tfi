@@ -1,12 +1,26 @@
 package edu.spring.istfi.model;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+@Entity
 public class Articulo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private long codigo;
     private String descripcion;
     private double costo;
     private double margenDeGanancia;
     private double iva;
 
+    // Constructor sin argumentos necesario para JPA
+    public Articulo() {
+    }
+
+    // Constructor con argumentos
     public Articulo(long codigo, String descripcion, double costo, double margenDeGanancia, double iva) {
         this.codigo = codigo;
         this.descripcion = descripcion;
@@ -72,7 +86,8 @@ public class Articulo {
 
     @Override
     public String toString() {
-        return "Articulo - Código: " + codigo +
+        return "Articulo - ID: " + id +
+                ", Código: " + codigo +
                 ", Descripción: " + descripcion +
                 ", Costo: " + costo +
                 ", Margen de Ganancia: " + margenDeGanancia +
