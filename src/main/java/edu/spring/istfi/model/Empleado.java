@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package edu.spring.istfi.model;
 
 import java.util.Date;
 public class Empleado {
