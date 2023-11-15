@@ -14,60 +14,61 @@ class ArticuloServiceTest {
     private ArticuloRepository repositorioArticulos;
 
     @BeforeEach
-    public void before(){
+    public void setUp() {
         repositorioArticulos = mock(ArticuloRepository.class);
         servicio = new ArticuloService(repositorioArticulos);
     }
 
     @Test
-    public void crearArticulo(){
-        Talle talle = new Talle("XL");
-        Color color = new Color("Negro");
-        Marca marca = new Marca("Adidas");
-        Categoria categoria = new Categoria("Deportiva");
-        Articulo articulo = servicio.createArticulo("remera",4500,10);
-        articulo.setTalle(talle);
-        articulo.setMarca(marca);
-        articulo.setColor(color);
-        articulo.setCategoria(categoria);
+    public void crearArticulo() {
+        Articulo articulo = crearArticuloDePrueba();
+        guardarArticuloEnRepositorio(articulo);
 
-        assertEquals(articulo.getDescripcion(),"remera");
-        assertEquals(articulo.getCosto(),4500);
-        assertEquals(articulo.getMargenDeGanancia(),10);
-        assertEquals(articulo.getTalle().getDescripcion(),"XL");
-        assertEquals(articulo.getColor().getDescripcion(),"Negro");
-        assertEquals(articulo.getMarca().getDescripcion(),"Adidas");
-        assertEquals(articulo.getCategoria().getDescripcion(),"Deportiva");
+        assertEquals("Remera", articulo.getDescripcion());
+        assertEquals(4500, articulo.getCosto());
+        assertEquals(10, articulo.getMargenDeGanancia());
+        assertEquals("XL", articulo.getTalle().getDescripcion());
+        assertEquals("Negro", articulo.getColor().getDescripcion());
+        assertEquals("Adidas", articulo.getMarca().getDescripcion());
+        assertEquals("Deportiva", articulo.getCategoria().getDescripcion());
 
-        verify(repositorioArticulos,times(1)).save(any(Articulo.class));
+        verify(repositorioArticulos, times(1)).save(any(Articulo.class));
     }
 
     @Test
     public void buscarArticuloPorCodigo() {
-
-        Talle talle = new Talle("XL");
-        Color color = new Color("Negro");
-        Marca marca = new Marca("Adidas");
-        Categoria categoria = new Categoria("Deportiva");
-
-        Articulo articuloEjemplo = new Articulo("Remera", 4500, 0.20);
-        articuloEjemplo.setTalle(talle);
-        articuloEjemplo.setMarca(marca);
-        articuloEjemplo.setColor(color);
-        articuloEjemplo.setCategoria(categoria);
-
+        Articulo articuloEjemplo = crearArticuloDePrueba();
         when(repositorioArticulos.findByCodigo(001)).thenReturn(articuloEjemplo);
 
         Articulo articuloEncontrado = servicio.buscarArticuloPorCodigo(001);
 
         assertEquals("Remera", articuloEncontrado.getDescripcion());
         assertEquals(4500, articuloEncontrado.getCosto());
-        assertEquals(0.20, articuloEncontrado.getMargenDeGanancia());
+        assertEquals(10, articuloEncontrado.getMargenDeGanancia());
         assertEquals("XL", articuloEncontrado.getTalle().getDescripcion());
         assertEquals("Adidas", articuloEncontrado.getMarca().getDescripcion());
         assertEquals("Negro", articuloEncontrado.getColor().getDescripcion());
         assertEquals("Deportiva", articuloEncontrado.getCategoria().getDescripcion());
 
         verify(repositorioArticulos, times(1)).findByCodigo(001);
+    }
+
+    private Articulo crearArticuloDePrueba() {
+        Talle talle = new Talle("XL");
+        Color color = new Color("Negro");
+        Marca marca = new Marca("Adidas");
+        Categoria categoria = new Categoria("Deportiva");
+
+        Articulo articulo = servicio.createArticulo("Remera", 4500, 10);
+        articulo.setTalle(talle);
+        articulo.setColor(color);
+        articulo.setMarca(marca);
+        articulo.setCategoria(categoria);
+
+        return articulo;
+    }
+
+    private void guardarArticuloEnRepositorio(Articulo articulo) {
+        when(repositorioArticulos.save(any(Articulo.class))).thenReturn(articulo);
     }
 }
