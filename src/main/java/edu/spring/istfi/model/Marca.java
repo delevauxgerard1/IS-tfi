@@ -9,6 +9,10 @@ public class Marca {
         this.descripcion = descripcion;
     }
 
+    public Marca(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     public int getId() {
         return id;
     }

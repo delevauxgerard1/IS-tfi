@@ -9,6 +9,10 @@ public class Color {
         this.descripcion = descripcion;
     }
 
+    public Color(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     public int getId() {
         return id;
     }

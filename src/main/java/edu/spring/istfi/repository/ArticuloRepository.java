@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticuloRepository extends JpaRepository<Articulo, Long> {
+    Articulo findByCodigo(long codigo);
 }
 

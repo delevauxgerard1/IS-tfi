@@ -17,14 +17,15 @@ public class ArticuloService {
         this.articuloRepository = articuloRepository;
     }
 
-    // Ejemplo: método para obtener todos los artículos
-    public List<Articulo> obtenerTodosLosArticulos() {
-        return articuloRepository.findAll();
+    public Articulo createArticulo(String descripcion, double costo, double margenDeGanancia){
+        Articulo newArticulo = new Articulo(descripcion,costo,margenDeGanancia);
+        articuloRepository.save(newArticulo);
+
+        return newArticulo;
     }
 
-    // Ejemplo: método para guardar un artículo
-    public Articulo guardarArticulo(Articulo articulo) {
-        return articuloRepository.save(articulo);
+    public Articulo buscarArticuloPorCodigo(long codigo) {
+        return articuloRepository.findByCodigo(codigo);
     }
 }
 
