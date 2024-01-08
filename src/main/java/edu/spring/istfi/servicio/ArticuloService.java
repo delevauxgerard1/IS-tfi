@@ -27,5 +27,9 @@ public class ArticuloService {
     public Articulo buscarArticuloPorCodigo(long codigo) {
         return articuloRepository.findByCodigo(codigo);
     }
+
+    public List<Articulo> obtenerTodosLosArticulos() {
+        return articuloRepository.findAll();
+    }
 }
 
