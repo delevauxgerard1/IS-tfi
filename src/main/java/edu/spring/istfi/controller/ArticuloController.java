@@ -4,9 +4,12 @@ import edu.spring.istfi.servicio.ArticuloService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +29,11 @@ public class ArticuloController {
         return articuloService.obtenerTodosLosArticulos();
     }
 
+    @GetMapping("/buscarPorDescripcion/{descripcion}")
+    public List<Articulo> buscarArticulosPorDescripcion(@PathVariable String descripcion) {
+        return articuloService.buscarPorDescripcion(descripcion);
+    }
+
     @GetMapping("/buscarPorCodigo")
     /*public ResponseEntity<Articulo> buscarArticulosPorCodigo(@RequestParam long codigo){
         Articulo articulo = articuloService.buscarArticuloPorCodigo(codigo);
@@ -40,9 +48,5 @@ public class ArticuloController {
 
     public List<Articulo> buscarArticulosPorCodigo(@RequestParam long codigo) {
         return (List<Articulo>) Collections.singletonList(articuloService.buscarArticuloPorCodigo(codigo));
-    }
-    @GetMapping("/buscarPorDescripcion")
-    public List<Articulo> buscarArticulosPorDescripcion(@RequestParam String descripcion) {
-        return articuloService.buscarPorDescripcion(descripcion);
     }
 }
