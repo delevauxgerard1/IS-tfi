@@ -1,9 +1,12 @@
 package edu.spring.istfi.controller;
 import edu.spring.istfi.model.Articulo;
+import edu.spring.istfi.model.Color;
+import edu.spring.istfi.model.Talle;
 import edu.spring.istfi.servicio.ArticuloService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,5 +51,27 @@ public class ArticuloController {
 
     public List<Articulo> buscarArticulosPorCodigo(@RequestParam long codigo) {
         return (List<Articulo>) Collections.singletonList(articuloService.buscarArticuloPorCodigo(codigo));
+    }
+    @GetMapping("/obtenerTallesDeArticulo/{codigo}")
+    public ResponseEntity<List<Talle>> obtenerTallesDeArticulo(@PathVariable long codigo) {
+        List<Talle> talles = articuloService.obtenerTallesDeArticulo(codigo);
+        return ResponseEntity.ok(talles);
+    }
+
+    @GetMapping("/obtenerColoresDeArticulo/{codigo}")
+    public ResponseEntity<List<Color>> obtenerColoresDeArticulo(@PathVariable long codigo) {
+        List<Color> colores = articuloService.obtenerColoresDeArticulo(codigo);
+        return ResponseEntity.ok(colores);
+    }
+    @GetMapping("/obtenerTallesPorDescripcion/{descripcion}")
+    public ResponseEntity<List<Talle>> obtenerTallesDeArticuloPorDescripcion(@PathVariable String descripcion) {
+        List<Talle> talles = articuloService.obtenerTallesDeArticuloPorDescripcion(descripcion);
+        return ResponseEntity.ok(talles);
+    }
+
+    @GetMapping("/obtenerColoresPorDescripcion/{descripcion}")
+    public ResponseEntity<List<Color>> obtenerColoresDeArticuloPorDescripcion(@PathVariable String descripcion) {
+        List<Color> colores = articuloService.obtenerColoresDeArticuloPorDescripcion(descripcion);
+        return ResponseEntity.ok(colores);
     }
 }

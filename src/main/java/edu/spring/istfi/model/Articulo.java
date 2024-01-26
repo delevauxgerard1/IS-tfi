@@ -1,5 +1,9 @@
 package edu.spring.istfi.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Articulo {
@@ -11,10 +15,22 @@ public class Articulo {
     private double costo;
     private double margenDeGanancia;
     private double iva = 0.21;
-    @ManyToOne
-    private Talle talle;
-    @ManyToOne
-    private Color color;
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "articulo_talle",
+            joinColumns = @JoinColumn(name = "articulo_id"),
+            inverseJoinColumns = @JoinColumn(name = "talle_id")
+    )
+    private Set<Talle> talles = new HashSet<>();
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "articulo_color",
+            joinColumns = @JoinColumn(name = "articulo_id"),
+            inverseJoinColumns = @JoinColumn(name = "color_id")
+    )
+    private Set<Color> colores = new HashSet<>();
     @ManyToOne
     private Marca marca;
 
@@ -28,20 +44,20 @@ public class Articulo {
     @ManyToOne
     private Categoria categoria;
 
-    public void setTalle(Talle talle) {
-        this.talle = talle;
+    public Set<Talle> getTalles() {
+        return talles;
     }
 
-    public Talle getTalle() {
-        return talle;
+    public void setTalles(Set<Talle> talles) {
+        this.talles = talles;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public Set<Color> getColores() {
+        return colores;
     }
 
-    public Color getColor() {
-        return color;
+    public void setColores(Set<Color> colores) {
+        this.colores = colores;
     }
 
     public void setMarca(Marca marca) {

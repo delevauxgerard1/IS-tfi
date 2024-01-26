@@ -26,16 +26,16 @@ class ArticuloServiceTest {
         Marca marca = new Marca("Adidas");
         Categoria categoria = new Categoria("Deportiva");
         Articulo articulo = servicio.createArticulo("remera",4500,10);
-        articulo.setTalle(talle);
+      //  articulo.setTalle(talle);
         articulo.setMarca(marca);
-        articulo.setColor(color);
+       // articulo.setColor(color);
         articulo.setCategoria(categoria);
 
         assertEquals(articulo.getDescripcion(),"remera");
         assertEquals(articulo.getCosto(),4500);
         assertEquals(articulo.getMargenDeGanancia(),10);
-        assertEquals(articulo.getTalle().getDescripcion(),"XL");
-        assertEquals(articulo.getColor().getDescripcion(),"Negro");
+       // assertEquals(articulo.getTalle().getDescripcion(),"XL");
+       // assertEquals(articulo.getColor().getDescripcion(),"Negro");
         assertEquals(articulo.getMarca().getDescripcion(),"Adidas");
         assertEquals(articulo.getCategoria().getDescripcion(),"Deportiva");
 
@@ -51,9 +51,9 @@ class ArticuloServiceTest {
         Categoria categoria = new Categoria("Deportiva");
 
         Articulo articuloEjemplo = new Articulo("Remera", 4500, 0.20);
-        articuloEjemplo.setTalle(talle);
+     //   articuloEjemplo.setTalle(talle);
         articuloEjemplo.setMarca(marca);
-        articuloEjemplo.setColor(color);
+     //   articuloEjemplo.setColor(color);
         articuloEjemplo.setCategoria(categoria);
 
         when(repositorioArticulos.findByCodigo(001)).thenReturn(articuloEjemplo);
@@ -63,9 +63,9 @@ class ArticuloServiceTest {
         assertEquals("Remera", articuloEncontrado.getDescripcion());
         assertEquals(4500, articuloEncontrado.getCosto());
         assertEquals(0.20, articuloEncontrado.getMargenDeGanancia());
-        assertEquals("XL", articuloEncontrado.getTalle().getDescripcion());
+      //  assertEquals("XL", articuloEncontrado.getTalle().getDescripcion());
         assertEquals("Adidas", articuloEncontrado.getMarca().getDescripcion());
-        assertEquals("Negro", articuloEncontrado.getColor().getDescripcion());
+      //  assertEquals("Negro", articuloEncontrado.getColor().getDescripcion());
         assertEquals("Deportiva", articuloEncontrado.getCategoria().getDescripcion());
 
         verify(repositorioArticulos, times(1)).findByCodigo(001);

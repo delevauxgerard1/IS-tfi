@@ -1,9 +1,10 @@
 package edu.spring.istfi.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 public class Color {
     public Color() {
@@ -13,6 +14,19 @@ public class Color {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String descripcion;
+
+    @ManyToMany(mappedBy = "colores")
+    private Set<Articulo> articulos = new HashSet<>();
+
+    // Métodos getter y setter para articulos
+    public Set<Articulo> getArticulos() {
+        return articulos;
+    }
+
+    public void setArticulos(Set<Articulo> articulos) {
+        this.articulos = articulos;
+    }
+
 
     public Color(int id, String descripcion) {
         this.id = id;
