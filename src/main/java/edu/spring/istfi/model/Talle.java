@@ -57,4 +57,15 @@ public class Talle {
         return "Talle - ID: " + id +
                 ", Descripción: " + descripcion;
     }
+
+    @ManyToOne
+    private TipoTalle tipoTalle;
+
+    public TipoTalle getTipoTalle() {
+        return tipoTalle;
+    }
+
+    public void setTipoTalle(TipoTalle tipoTalle) {
+        this.tipoTalle = tipoTalle;
+    }
 }
