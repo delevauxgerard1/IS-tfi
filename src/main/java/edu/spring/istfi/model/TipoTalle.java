@@ -16,6 +16,9 @@ public class TipoTalle {
         this.id = id;
         this.descripcion = descripcion;
     }
+    public TipoTalle() {
+    }
+
 
     public int getId() {
         return id;
