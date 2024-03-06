@@ -1,5 +1,6 @@
 package edu.spring.istfi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -18,7 +19,18 @@ public class Color {
     @ManyToMany(mappedBy = "colores")
     private Set<Articulo> articulos = new HashSet<>();
 
-    // Métodos getter y setter para articulos
+    @OneToMany(mappedBy = "color", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Stock> stocks = new HashSet<>();
+
+
+    // Métodos getter y setter
+    public Set<Stock> getStocks() {
+        return stocks;
+    }
+    public void setStocks(Set<Stock> stocks) {
+        this.stocks = stocks;
+    }
     public Set<Articulo> getArticulos() {
         return articulos;
     }

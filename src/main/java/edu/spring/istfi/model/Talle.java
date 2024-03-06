@@ -1,5 +1,6 @@
 package edu.spring.istfi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -13,6 +14,16 @@ public class Talle {
     private String descripcion;
     @ManyToMany(mappedBy = "talles")
     private Set<Articulo> articulos = new HashSet<>();
+
+    @OneToMany(mappedBy = "talle", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Stock> stocks = new HashSet<>();
+    public Set<Stock> getStocks() {
+        return stocks;
+    }
+    public void setStocks(Set<Stock> stocks) {
+        this.stocks = stocks;
+    }
     // Métodos getter y setter para articulos
     public Set<Articulo> getArticulos() {
         return articulos;
@@ -24,8 +35,6 @@ public class Talle {
     public Talle() {
         // Constructor sin argumentos necesario para JPA/Hibernate
     }
-
-
     public Talle(int id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
@@ -59,6 +68,7 @@ public class Talle {
     }
 
     @ManyToOne
+    @JoinColumn(name = "tipo_talle_id")
     private TipoTalle tipoTalle;
 
     public TipoTalle getTipoTalle() {

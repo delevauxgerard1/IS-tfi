@@ -15,29 +15,29 @@ public class Articulo {
     private double costo;
     private double margenDeGanancia;
     private double iva = 0.21;
+    @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Stock> stocks = new HashSet<>();
+    public Set<Stock> getStocks() {
+        return stocks;
+    }
+    public void setStocks(Set<Stock> stocks) {
+        this.stocks = stocks;
+    }
     @JsonIgnore
     @ManyToMany
-    @JoinTable(
-            name = "articulo_talle",
-            joinColumns = @JoinColumn(name = "articulo_id"),
-            inverseJoinColumns = @JoinColumn(name = "talle_id")
-    )
+    @JoinTable(name = "articulo_talle", joinColumns = @JoinColumn(name = "articulo_id"), inverseJoinColumns = @JoinColumn(name = "talle_id"))
     private Set<Talle> talles = new HashSet<>();
     @JsonIgnore
     @ManyToMany
-    @JoinTable(
-            name = "articulo_color",
-            joinColumns = @JoinColumn(name = "articulo_id"),
-            inverseJoinColumns = @JoinColumn(name = "color_id")
+    @JoinTable(name = "articulo_color", joinColumns = @JoinColumn(name = "articulo_id"), inverseJoinColumns = @JoinColumn(name = "color_id")
     )
     private Set<Color> colores = new HashSet<>();
     @ManyToOne
     private Marca marca;
-
     public Categoria getCategoria() {
         return categoria;
     }
-
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
