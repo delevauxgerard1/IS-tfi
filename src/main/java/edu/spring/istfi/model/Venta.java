@@ -15,6 +15,9 @@ public class Venta {
     private long numComprobante;
     private double total;
     @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+    @ManyToOne
     @JoinColumn(name = "comprobante_id")
     private Comprobante comprobante;
     @OneToOne
@@ -74,11 +77,13 @@ public class Venta {
     public Venta() {
     }
 
-    public Venta(int id, LocalDateTime fecha, long numComprobante, double total, Comprobante comprobante, Pago pago, Set<LineaVenta> lineaVentas) {
+
+    public Venta(int id, LocalDateTime fecha, long numComprobante, double total, Cliente cliente, Comprobante comprobante, Pago pago, Set<LineaVenta> lineaVentas) {
         this.id = id;
         this.fecha = fecha;
         this.numComprobante = numComprobante;
         this.total = total;
+        this.cliente = cliente;
         this.comprobante = comprobante;
         this.pago = pago;
         this.lineaVentas = lineaVentas;

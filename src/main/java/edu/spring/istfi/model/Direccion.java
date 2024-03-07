@@ -1,10 +1,7 @@
 package edu.spring.istfi.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 @Entity
 public class Direccion {
     @Id
@@ -14,6 +11,8 @@ public class Direccion {
     private int codigoPostal;
     private String calle;
     private int numero;
+    @OneToOne(mappedBy = "direccion")
+    private Cliente cliente;
     public int getId() {
         return id;
     }

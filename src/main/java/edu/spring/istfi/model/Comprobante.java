@@ -16,10 +16,38 @@ public class Comprobante {
     @JsonIgnore
     private Set<Venta> ventas = new HashSet<>();
 
-    public Comprobante(int id, int codigo, Set<Venta> ventas) {
+    @ManyToOne
+    @JoinColumn(name = "tipo_comprobante_id")
+    private TipoComprobante tipoComprobante;
+    @ManyToOne
+    @JoinColumn(name = "condicion_tributaria_id")
+    private CondicionTributaria condicionTributaria;
+
+    public Comprobante() {
+    }
+
+    public Comprobante(int id, int codigo, Set<Venta> ventas, TipoComprobante tipoComprobante, CondicionTributaria condicionTributaria) {
         this.id = id;
         this.codigo = codigo;
         this.ventas = ventas;
+        this.tipoComprobante = tipoComprobante;
+        this.condicionTributaria = condicionTributaria;
+    }
+
+    public TipoComprobante getTipoComprobante() {
+        return tipoComprobante;
+    }
+
+    public void setTipoComprobante(TipoComprobante tipoComprobante) {
+        this.tipoComprobante = tipoComprobante;
+    }
+
+    public CondicionTributaria getCondicionTributaria() {
+        return condicionTributaria;
+    }
+
+    public void setCondicionTributaria(CondicionTributaria condicionTributaria) {
+        this.condicionTributaria = condicionTributaria;
     }
 
     public Set<Venta> getVentas() {
