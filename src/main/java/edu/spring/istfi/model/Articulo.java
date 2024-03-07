@@ -9,7 +9,7 @@ import java.util.Set;
 public class Articulo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     private long codigo;
     private String descripcion;
     private double costo;

@@ -2,11 +2,13 @@ package edu.spring.istfi.servicio;
 
 import edu.spring.istfi.model.Articulo;
 import edu.spring.istfi.model.Color;
+import edu.spring.istfi.model.Stock;
 import edu.spring.istfi.model.Talle;
 import edu.spring.istfi.repository.ArticuloRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,6 +77,10 @@ public class ArticuloService {
             colores.addAll(articulo.getColores());
         }
         return colores;
+    }
+
+    public Stock obtenerStock(long idArticulo, int idColor, int idTalle) {
+        return articuloRepository.findStock(idArticulo, idColor, idTalle);
     }
 }
 

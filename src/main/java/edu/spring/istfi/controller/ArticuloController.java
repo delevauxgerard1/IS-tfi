@@ -1,6 +1,7 @@
 package edu.spring.istfi.controller;
 import edu.spring.istfi.model.Articulo;
 import edu.spring.istfi.model.Color;
+import edu.spring.istfi.model.Stock;
 import edu.spring.istfi.model.Talle;
 import edu.spring.istfi.servicio.ArticuloService;
 import org.slf4j.Logger;
@@ -37,17 +38,6 @@ public class ArticuloController {
         return articuloService.buscarPorDescripcion(descripcion);
     }
 
-    @GetMapping("/buscarPorCodigo")
-    /*public ResponseEntity<Articulo> buscarArticulosPorCodigo(@RequestParam long codigo){
-        Articulo articulo = articuloService.buscarArticuloPorCodigo(codigo);
-
-        if (articulo != null) {
-            return new ResponseEntity<>(articulo, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        //devuelve HttpStatus.NOT_FOUND si el código no se encuentra
-    }*/
 
     public List<Articulo> buscarArticulosPorCodigo(@RequestParam long codigo) {
         return (List<Articulo>) Collections.singletonList(articuloService.buscarArticuloPorCodigo(codigo));
@@ -74,4 +64,11 @@ public class ArticuloController {
         List<Color> colores = articuloService.obtenerColoresDeArticuloPorDescripcion(descripcion);
         return ResponseEntity.ok(colores);
     }
+
+    @GetMapping("/obtenerStock/{idArticulo}/{idColor}/{idTalle}")
+    public ResponseEntity<Stock> obtenerColoresDeArticuloPorDescripcion(@PathVariable Long idArticulo, @PathVariable int idColor, @PathVariable int idTalle) {
+        Stock stock = articuloService.obtenerStock(idArticulo,idColor,idTalle);
+        return ResponseEntity.ok(stock);
+    }
+
 }
