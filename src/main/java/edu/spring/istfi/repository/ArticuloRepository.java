@@ -1,6 +1,7 @@
 package edu.spring.istfi.repository;
 
 import edu.spring.istfi.model.Articulo;
+import edu.spring.istfi.model.Stock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +29,15 @@ public interface ArticuloRepository extends JpaRepository<Articulo, Long> {
             "WHERE LOWER(a.descripcion) LIKE LOWER(CONCAT('%', :descripcion, '%'))")
     List<Articulo> findByDescripcionContainingWithTallesAndColores(@Param("descripcion") String descripcion);
 
+    @Query("SELECT s FROM Stock s " +
+            "WHERE s.articulo.id = :idArticulo " +
+            "AND ( s.color.id = :idColor) " +
+            "AND ( s.talle.id = :idTalle)")
+    Stock findStock(
+            @Param("idArticulo") long idArticulo,
+            @Param("idColor") int idColor,
+            @Param("idTalle") int idTalle
+    );
 
 
 
