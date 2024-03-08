@@ -54,21 +54,7 @@ public class Cliente {
         this.id = id;
     }
 
-    public int getdni() {
-        return dni;
-    }
 
-    public void setdni(int dni) {
-        this.dni = dni;
-    }
-
-    public int getcuit() {
-        return cuit;
-    }
-
-    public void setcuit(int cuit) {
-        this.cuit = cuit;
-    }
 
     public String getRazonSocial() {
         return razonSocial;

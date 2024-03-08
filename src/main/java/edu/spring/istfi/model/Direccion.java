@@ -21,6 +21,9 @@ public class Direccion {
         this.id = id;
     }
 
+    public Direccion() {
+    }
+
     public Direccion(int codigo, int codigoPostal, String calle, int numero) {
         this.codigo = codigo;
         this.codigoPostal = codigoPostal;
