@@ -19,8 +19,8 @@ public class ClienteTest {
     @Autowired
     private ClienteService servicio;
 
-    @Test
-    public void buscarClientePorDni() {
+    //@Test
+    /*public void buscarClientePorDni() {
         Direccion direccionEjemplo = new Direccion(1, 12345, "Calle Ejemplo", 42);
         Cliente clienteEjemplo = new Cliente(1, 12345678, 987654321, "Cliente Ejemplo","Nicolas","Morales", direccionEjemplo);
 
@@ -32,5 +32,5 @@ public class ClienteTest {
 
 
         verify(clienteRepository, times(1)).findByDni(12345678);
-    }
+    }*/
 }

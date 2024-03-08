@@ -11,14 +11,10 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int dni;
-    private int cuit;
-    private String Nombre;
-    private String Apellido;
-    private String razonSocial;
-    @OneToOne
-    @JoinColumn(name = "direccion_id")
-    private Direccion direccion;
+    private long cuit;
+    private String nombre;
+
+    private String domicilio;
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Venta> venta = new HashSet<>();
@@ -27,22 +23,30 @@ public class Cliente {
     }
 
     // Constructor
-    public Cliente(int id, int dni, int cuit, String nombre, String apellido, String razonSocial, Direccion direccion) {
+
+
+    public Cliente(int id, long cuit, String nombre, String domicilio, Set<Venta> venta) {
         this.id = id;
-        this.dni = dni;
         this.cuit = cuit;
-        Nombre = nombre;
-        Apellido = apellido;
-        this.razonSocial = razonSocial;
-        this.direccion = direccion;
+        this.nombre = nombre;
+        this.domicilio = domicilio;
+        this.venta = venta;
     }
 
-    public void setDireccion(Direccion direccion) {
-        this.direccion = direccion;
+    public String getNombre() {
+        return nombre;
     }
 
-    public Direccion getDireccion() {
-        return direccion;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDomicilio() {
+        return domicilio;
+    }
+
+    public void setDomicilio(String domicilio) {
+        this.domicilio = domicilio;
     }
 
     // Getters y Setters
@@ -54,45 +58,11 @@ public class Cliente {
         this.id = id;
     }
 
-
-
-    public String getRazonSocial() {
-        return razonSocial;
-    }
-
-    public void setRazonSocial(String razonSocial) {
-        this.razonSocial = razonSocial;
-    }
-
-    public String getApellido() {
-        return Apellido;
-    }
-
-    public void setApellido(String apellido) {
-        Apellido = apellido;
-    }
-
-    public String getNombre() {
-        return Nombre;
-    }
-
-    public void setNombre(String nombre) {
-        Nombre = nombre;
-    }
-
-    public int getDni() {
-        return dni;
-    }
-
-    public void setDni(int dni) {
-        this.dni = dni;
-    }
-
-    public int getCuit() {
+    public long getCuit() {
         return cuit;
     }
 
-    public void setCuit(int cuit) {
+    public void setCuit(long cuit) {
         this.cuit = cuit;
     }
 

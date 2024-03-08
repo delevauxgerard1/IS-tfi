@@ -25,9 +25,9 @@ public class ClienteController {
 
     @Autowired
     private ClienteService clienteService;
-    @GetMapping("/buscarCliente/{dni}")
-    public ResponseEntity<Cliente> buscarClienteDni(@PathVariable int dni) {
-        Cliente cliente = clienteService.buscarClienteporDni(dni);
+    @GetMapping("/buscarCliente/{cuit}")
+    public ResponseEntity<Cliente> buscarClienteDni(@PathVariable long cuit) {
+        Cliente cliente = clienteService.buscarClienteporCuit(cuit);
         return ResponseEntity.ok(cliente);
     }
 }

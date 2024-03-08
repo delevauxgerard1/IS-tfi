@@ -18,8 +18,8 @@ public class ClienteService {
     }
 
 
-    public Cliente buscarClienteporDni(int dni) {
-        return clienteRepository.findByDni(dni);
+    public Cliente buscarClienteporCuit(long cuit) {
+        return clienteRepository.findByDni(cuit);
     }
 
 
