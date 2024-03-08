@@ -38,8 +38,6 @@ public class ArticuloService {
         return articuloRepository.findByDescripcionContaining(descripcion);
     }
 
-
-
     public List<Articulo> obtenerTodosLosArticulos() {
         return articuloRepository.findAll();
     }
@@ -69,7 +67,6 @@ public class ArticuloService {
         }
         return talles;
     }
-
     public List<Color> obtenerColoresDeArticuloPorDescripcion(String descripcion) {
         List<Articulo> articulos = articuloRepository.findByDescripcionContaining(descripcion);
         List<Color> colores = new ArrayList<>();
@@ -78,7 +75,6 @@ public class ArticuloService {
         }
         return colores;
     }
-
     public Stock obtenerStock(long idArticulo, int idColor, int idTalle) {
         return articuloRepository.findStock(idArticulo, idColor, idTalle);
     }
