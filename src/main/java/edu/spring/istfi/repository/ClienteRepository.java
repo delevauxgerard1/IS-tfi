@@ -13,6 +13,6 @@ public interface ClienteRepository extends JpaRepository<Cliente,Integer> {
 
 
     @Query("SELECT DISTINCT c FROM Cliente c " +
-            "WHERE c.dni = :dni")
-    Cliente findByDni(@Param("dni") int dni);
+            "WHERE c.cuit = :cuit")
+    Cliente findByDni(@Param("cuit") long cuit);
 }
