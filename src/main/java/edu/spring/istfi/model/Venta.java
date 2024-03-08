@@ -12,7 +12,7 @@ public class Venta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private LocalDateTime fecha;
-    private long numComprobante;
+   // private long numComprobante;
     private double total;
     @ManyToOne
     @JoinColumn(name = "cliente_id")
@@ -46,13 +46,6 @@ public class Venta {
         this.fecha = fecha;
     }
 
-    public long getNumComprobante() {
-        return numComprobante;
-    }
-
-    public void setNumComprobante(long numComprobante) {
-        this.numComprobante = numComprobante;
-    }
 
     public void setTotal(double total) {
         this.total = total;
@@ -78,10 +71,9 @@ public class Venta {
     }
 
 
-    public Venta(int id, LocalDateTime fecha, long numComprobante, double total, Cliente cliente, Comprobante comprobante, Pago pago, Set<LineaVenta> lineaVentas) {
+    public Venta(int id, LocalDateTime fecha, double total, Cliente cliente, Comprobante comprobante, Pago pago, Set<LineaVenta> lineaVentas) {
         this.id = id;
         this.fecha = fecha;
-        this.numComprobante = numComprobante;
         this.total = total;
         this.cliente = cliente;
         this.comprobante = comprobante;
