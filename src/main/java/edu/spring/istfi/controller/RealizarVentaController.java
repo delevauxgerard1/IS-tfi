@@ -14,7 +14,7 @@ import java.util.List;
 //http://localhost:8080/tfib/
 @RequestMapping("tfib")
 @CrossOrigin(value = "http://localhost:5173")
-public class VentaController {
+public class RealizarVentaController {
 
     @GetMapping("/listarTipoPago")
     public List<String> listarTiposPago() {
