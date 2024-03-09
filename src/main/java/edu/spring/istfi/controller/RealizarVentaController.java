@@ -78,5 +78,9 @@ public class RealizarVentaController {
         return ResponseEntity.ok(colores);
     }
 
-
+    @GetMapping("/obtenerStock/{idArticulo}/{idColor}/{idTalle}")
+    public ResponseEntity<Stock> obtenerColoresDeArticuloPorDescripcion(@PathVariable Long idArticulo, @PathVariable int idColor, @PathVariable int idTalle) {
+        Stock stock = articuloService.obtenerStock(idArticulo,idColor,idTalle);
+        return ResponseEntity.ok(stock);
+    }
 }
