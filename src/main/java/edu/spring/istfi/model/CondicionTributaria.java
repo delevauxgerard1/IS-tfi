@@ -13,15 +13,28 @@ public class CondicionTributaria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String descripcion;
+    @ManyToOne
+    @JoinColumn(name = "tipo_comprobante_id")
+    private TipoComprobante tipoComprobante;
 
 
     public CondicionTributaria() {
     }
 
-    public CondicionTributaria(int id, String descripcion) {
+    public CondicionTributaria(int id, String descripcion, TipoComprobante tipoComprobante) {
         this.id = id;
         this.descripcion = descripcion;
+        this.tipoComprobante = tipoComprobante;
     }
+
+    public TipoComprobante getTipoComprobante() {
+        return tipoComprobante;
+    }
+
+    public void setTipoComprobante(TipoComprobante tipoComprobante) {
+        this.tipoComprobante = tipoComprobante;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }
