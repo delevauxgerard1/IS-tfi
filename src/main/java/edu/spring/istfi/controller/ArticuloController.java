@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("tfib")
 @CrossOrigin(value = "http://localhost:5173")
 public class ArticuloController {
-    private static final Logger logger = LoggerFactory.getLogger(ArticuloController.class);
+   /* private static final Logger logger = LoggerFactory.getLogger(ArticuloController.class);
 
     @Autowired
     private ArticuloService articuloService;
@@ -39,9 +39,7 @@ public class ArticuloController {
     }
 
 
-    public List<Articulo> buscarArticulosPorCodigo(@RequestParam long codigo) {
-        return (List<Articulo>) Collections.singletonList(articuloService.buscarArticuloPorCodigo(codigo));
-    }
+
     @GetMapping("/obtenerTallesDeArticulo/{codigo}")
     public ResponseEntity<List<Talle>> obtenerTallesDeArticulo(@PathVariable long codigo) {
         List<Talle> talles = articuloService.obtenerTallesDeArticulo(codigo);
@@ -69,6 +67,6 @@ public class ArticuloController {
     public ResponseEntity<Stock> obtenerColoresDeArticuloPorDescripcion(@PathVariable Long idArticulo, @PathVariable int idColor, @PathVariable int idTalle) {
         Stock stock = articuloService.obtenerStock(idArticulo,idColor,idTalle);
         return ResponseEntity.ok(stock);
-    }
+    }*/
 
 }

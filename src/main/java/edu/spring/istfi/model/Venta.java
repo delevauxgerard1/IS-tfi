@@ -81,8 +81,5 @@ public class Venta {
         this.lineaVentas = lineaVentas;
     }
 
-    private double getTotal() {
-        // Lógica para calcular el total de la venta
-        return 0;
-    }
+
 }

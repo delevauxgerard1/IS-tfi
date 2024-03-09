@@ -70,4 +70,12 @@ public class Comprobante {
     public String toString() {
         return "Comprobante - Código: " + codigo;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

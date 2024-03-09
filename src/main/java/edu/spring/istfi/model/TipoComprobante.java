@@ -12,25 +12,17 @@ public class TipoComprobante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String descripcion;
-    @OneToMany(mappedBy = "tipoComprobante", cascade = CascadeType.ALL)
-    private Set<Comprobante> comprobante = new HashSet<>();
+
 
     public TipoComprobante() {
     }
 
-    public TipoComprobante(int id, String descripcion, Set<Comprobante> comprobante) {
+    public TipoComprobante(int id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
-        this.comprobante = comprobante;
+
     }
 
-    public Set<Comprobante> getComprobante() {
-        return comprobante;
-    }
-
-    public void setComprobante(Set<Comprobante> comprobante) {
-        this.comprobante = comprobante;
-    }
 
     public String getDescripcion() {
         return descripcion;
@@ -39,4 +31,11 @@ public class TipoComprobante {
         this.descripcion = descripcion;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
