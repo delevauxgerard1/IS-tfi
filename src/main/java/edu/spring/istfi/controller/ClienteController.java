@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("tfib")
 @CrossOrigin(value = "http://localhost:5173")
 public class ClienteController {
-    private static final Logger logger = LoggerFactory.getLogger(ClienteController.class);
+   /* private static final Logger logger = LoggerFactory.getLogger(ClienteController.class);
 
     @Autowired
     private ClienteService clienteService;
@@ -29,5 +29,5 @@ public class ClienteController {
     public ResponseEntity<Cliente> buscarClienteDni(@PathVariable long cuit) {
         Cliente cliente = clienteService.buscarClienteporCuit(cuit);
         return ResponseEntity.ok(cliente);
-    }
+    }*/
 }
