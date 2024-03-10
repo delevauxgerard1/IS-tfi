@@ -1,14 +1,21 @@
 package edu.spring.istfi.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.spring.istfi.model.*;
+import edu.spring.istfi.repository.*;
 import org.slf4j.ILoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
@@ -75,9 +82,23 @@ public class ApiController {
             return ResponseEntity.status(500).body("Error al procesar la solicitud");
         }
     }
+    @Autowired
+    private VentaRepository ventaRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
+    @Autowired
+    private PagoRepository pagoRepository;
+    @Autowired
+    private ComprobanteRepository comprobanteRepository;
+    @Autowired
+    private CondicionTributariaRepository condicionTributariaRepository;
+    @Autowired
+    private TipoComprobanteRepository tipoComprobanteRepository;
+
     @PostMapping("/realizarPago")
-    public ResponseEntity<?> solicitarToken(@RequestBody String requestBody) {
+    public ResponseEntity<?> realizarPago(@RequestBody String requestBody) {
         try {
+
             // Convertir el cuerpo de la solicitud a un objeto JsonNode
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(requestBody);
@@ -132,9 +153,6 @@ public class ApiController {
 
             //comienza api 2
 
-
-
-
             int longitudCodigo = 6;
             byte[] randomBytes = new byte[longitudCodigo];
             new SecureRandom().nextBytes(randomBytes);
@@ -186,6 +204,34 @@ public class ApiController {
             // Obtener la respuesta de la segunda API y devolverla al frontend
             String responseBody2 = externalApiResponseEntity2.getBody();
             JsonNode respuestaJson2 = objectMapper.readTree(responseBody2);
+
+            if (respuestaJson2.has("status") && respuestaJson2.get("status").asText().equals("approved")) {
+                //para cliente
+                int clienteId = Integer.parseInt(jsonNode.get("datosCliente").get("idCliente").asText());
+                Optional<Cliente> clienteOptional = clienteRepository.findById(clienteId);
+                Cliente cliente = clienteOptional.get();
+
+                //para comprobante
+                int condicionTributariaId = Integer.parseInt(jsonNode.get("condicionTributaria").get("id").asText());
+                int tipoComprobanteId = Integer.parseInt(jsonNode.get("condicionTributaria").get("tipoComprobante").get("id").asText());
+                Optional<CondicionTributaria> condicionTributariaOptional = condicionTributariaRepository.findById(condicionTributariaId);
+                CondicionTributaria condicionTributaria = condicionTributariaOptional.get();
+                Optional<TipoComprobante> tipoComprobanteOptional = tipoComprobanteRepository.findById(tipoComprobanteId);
+                TipoComprobante tipoComprobante = tipoComprobanteOptional.get();
+                Comprobante nuevoComprobante = new Comprobante();
+                nuevoComprobante.setTipoComprobante(tipoComprobante);
+                nuevoComprobante.setCondicionTributaria(condicionTributaria);
+                comprobanteRepository.save(nuevoComprobante);
+                // Crear una nueva venta
+
+
+                Venta nuevaVenta = new Venta();
+                nuevaVenta.setFecha(LocalDate.now());
+                nuevaVenta.setTotal(amount);
+                nuevaVenta.setCliente(cliente);
+                nuevaVenta.setComprobante(nuevoComprobante);
+                ventaRepository.save(nuevaVenta);
+            }
 
             return ResponseEntity.ok(respuestaJson2);
 

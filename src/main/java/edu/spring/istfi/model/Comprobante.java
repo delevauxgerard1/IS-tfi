@@ -11,7 +11,7 @@ public class Comprobante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int codigo;
+
     @OneToMany(mappedBy = "comprobante", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Venta> ventas = new HashSet<>();
@@ -26,9 +26,8 @@ public class Comprobante {
     public Comprobante() {
     }
 
-    public Comprobante(int id, int codigo, Set<Venta> ventas, TipoComprobante tipoComprobante, CondicionTributaria condicionTributaria) {
+    public Comprobante(int id, Set<Venta> ventas, TipoComprobante tipoComprobante, CondicionTributaria condicionTributaria) {
         this.id = id;
-        this.codigo = codigo;
         this.ventas = ventas;
         this.tipoComprobante = tipoComprobante;
         this.condicionTributaria = condicionTributaria;
@@ -56,19 +55,6 @@ public class Comprobante {
 
     public void setVentas(Set<Venta> ventas) {
         this.ventas = ventas;
-    }
-
-    public int getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
-    }
-
-    @Override
-    public String toString() {
-        return "Comprobante - Código: " + codigo;
     }
 
     public int getId() {
