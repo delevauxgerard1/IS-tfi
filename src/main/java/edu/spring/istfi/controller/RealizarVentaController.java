@@ -35,7 +35,6 @@ public class RealizarVentaController {
                 TipoPago.TARJETA_CREDITO.getDescripcion()
         );
     }
-
     @Autowired
     private CondicionTributariaService condicionTributariaService;
 
@@ -45,7 +44,6 @@ public class RealizarVentaController {
     }
 
     //clientes consultas
-
     @Autowired
     private ClienteService clienteService;
     @GetMapping("/buscarCliente/{cuit}")
