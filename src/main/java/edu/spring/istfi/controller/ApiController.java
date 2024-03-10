@@ -1,4 +1,7 @@
 package edu.spring.istfi.controller;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.ILoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -9,56 +12,65 @@ import org.springframework.beans.factory.annotation.Value;
 @RequestMapping("/api")
 public class ApiController {
 
-    @Value("${decidir.api.url}")
-    private String DECIDIR_API_URL;
+    @PostMapping("/solicitarToken")
+    public ResponseEntity<String> dummyEndpoint(@RequestBody String requestBody) {
+        try {
+            // Convertir el cuerpo de la solicitud a un objeto JsonNode
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(requestBody);
 
-    @Value("${decidir.api.key}")
-    private String DECIDIR_API_KEY;
+            // Extraer los datos necesarios del JSON
+            String cardNumber = jsonNode.get("datosTarjeta").get("numero").asText();
+            String expirationMonth = jsonNode.get("datosTarjeta").get("vencimiento").get("mes").asText();
+            String expirationYear = jsonNode.get("datosTarjeta").get("vencimiento").get("año").asText();
+             expirationYear = expirationYear.length() >= 2
+                    ? expirationYear.substring(expirationYear.length() - 2)
+                    : expirationYear;
+            String securityCode = jsonNode.get("datosTarjeta").get("cvv").asText();
+            String cardHolderName = jsonNode.get("datosCliente").get("nombreCliente").asText();
+            JsonNode cardHolderIdentificationNode = jsonNode.get("card_holder_identification");
+            String identificationType = "dni";
+            String identificationNumber = jsonNode.get("datosTarjeta").get("dni").asText();
+            // Construir un nuevo JSON con los datos necesarios
+            String nuevoJson = "{"
+                    + "\"card_number\": \"" + cardNumber + "\", "
+                    + "\"card_expiration_month\": \"" + expirationMonth + "\", "
+                    + "\"card_expiration_year\": \"" + expirationYear + "\", "
+                    + "\"security_code\": \"" + securityCode + "\", "
+                    + "\"card_holder_name\": \"" + cardHolderName + "\", "
+                    + "\"card_holder_identification\": {"
+                    + "  \"type\": \"" + identificationType + "\", "
+                    + "  \"number\": \"" + identificationNumber + "\""
+                    + "}"
+                    + "}";
 
-    @PostMapping("/processCard")
-    public ResponseEntity<String> processCard(@RequestBody Map<String, Object> frontendData) {
-        // Descomponer el JSON recibido desde el front-end
-        String cardNumber = (String) frontendData.get("card_number");
-        String cardExpirationMonth = (String) frontendData.get("card_expiration_month");
-        String cardExpirationYear = (String) frontendData.get("card_expiration_year");
-        String securityCode = (String) frontendData.get("security_code");
-        String cardHolderName = (String) frontendData.get("card_holder_name");
-        Map<String, String> cardHolderIdentification = (Map<String, String>) frontendData.get("card_holder_identification");
-        String identificationType = cardHolderIdentification.get("type");
-        String identificationNumber = cardHolderIdentification.get("number");
+            // Construir el encabezado para la API externa
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("apikey", "b192e4cb99564b84bf5db5550112adea");
 
-        // Construir el JSON para la API externa
-        String apiRequestBody = "{" +
-                "\"card_number\":\"" + cardNumber + "\"," +
-                "\"card_expiration_month\":\"" + cardExpirationMonth + "\"," +
-                "\"card_expiration_year\":\"" + cardExpirationYear + "\"," +
-                "\"security_code\":\"" + securityCode + "\"," +
-                "\"card_holder_name\":\"" + cardHolderName + "\"," +
-                "\"card_holder_identification\":{" +
-                "\"type\":\"" + identificationType + "\"," +
-                "\"number\":\"" + identificationNumber + "\"" +
-                "}" +
-                "}";
+            // Construir la entidad HTTP con los datos y el encabezado
+            HttpEntity<String> externalApiRequestEntity = new HttpEntity<>(nuevoJson, headers);
 
-        // Construir el encabezado con la API Key
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "apikey " + DECIDIR_API_KEY);
-        headers.setContentType(MediaType.APPLICATION_JSON);
+            // URL de la API externa
+            String externalApiUrl = "https://developers.decidir.com/api/v2/tokens";
 
-        // Construir la entidad HTTP con los datos y el encabezado
-        HttpEntity<String> requestEntity = new HttpEntity<>(apiRequestBody, headers);
+            // Realizar la petición a la API externa
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> externalApiResponseEntity = restTemplate.postForEntity(
+                    externalApiUrl,
+                    externalApiRequestEntity,
+                    String.class
+            );
 
-        // Realizar la petición a la API externa
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                DECIDIR_API_URL,
-                HttpMethod.POST,
-                requestEntity,
-                String.class
-        );
+            // Devolver la respuesta de la API externa al frontend junto con la respuesta original
+            String responseBody = "Respuesta de la API externa: " + externalApiResponseEntity.getBody();
+            return ResponseEntity.ok(responseBody);
 
-        // Devolver la respuesta de la API externa al front-end
-        return ResponseEntity.status(responseEntity.getStatusCode()).body(responseEntity.getBody());
+        } catch (Exception e) {
+            e.printStackTrace(); // Manejar las excepciones según tus necesidades
+            return ResponseEntity.status(500).body("Error al procesar la solicitud");
+        }
     }
 
 }
