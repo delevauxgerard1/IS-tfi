@@ -14,5 +14,13 @@ public enum TipoPago {
     public String getDescripcion() {
         return descripcion;
     }
+    public static TipoPago fromDescripcion(String descripcion) {
+        for (TipoPago tipoPago : TipoPago.values()) {
+            if (tipoPago.getDescripcion().equalsIgnoreCase(descripcion)) {
+                return tipoPago;
+            }
+        }
+        throw new IllegalArgumentException("No se encontró Tipo Pago : " + descripcion);
+    }
 
 }

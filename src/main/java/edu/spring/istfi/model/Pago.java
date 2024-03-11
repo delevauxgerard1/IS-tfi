@@ -2,6 +2,7 @@ package edu.spring.istfi.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Entity
 public class Pago {
@@ -9,7 +10,7 @@ public class Pago {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private Date fecha;
+    private LocalDate fecha;
     private double monto;
     @Enumerated(EnumType.STRING)
     private TipoPago tipoPago;
@@ -17,7 +18,10 @@ public class Pago {
     @OneToOne(mappedBy = "pago")
     private Venta venta;
 
-    public Pago(int id, Date fecha, double monto, TipoPago tipoPago, Venta venta) {
+    public Pago() {
+    }
+
+    public Pago(int id, LocalDate fecha, double monto, TipoPago tipoPago, Venta venta) {
         this.id = id;
         this.fecha = fecha;
         this.monto = monto;
@@ -44,11 +48,11 @@ public class Pago {
     }
 
 
-    public Date getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
@@ -67,4 +71,5 @@ public class Pago {
     public void setId(int id) {
         this.id = id;
     }
+
 }
