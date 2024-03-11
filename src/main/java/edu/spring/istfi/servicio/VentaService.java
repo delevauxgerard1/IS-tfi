@@ -1,82 +1,39 @@
-package edu.spring.istfi.controller;
+package edu.spring.istfi.servicio;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.ILoggerFactory;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import edu.spring.istfi.model.*;
+import edu.spring.istfi.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.Base64;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
+import java.util.Optional;
 
-@RestController
-@RequestMapping("/api")
-public class ApiController {
-    @PostMapping("/solicitarToken")
-    public ResponseEntity<?> dummyEndpoint(@RequestBody String requestBody) {
-        try {
-            // Convertir el cuerpo de la solicitud a un objeto JsonNode
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(requestBody);
+@Service
+public class VentaService {
+    @Autowired
+    private VentaRepository ventaRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
+    @Autowired
+    private PagoRepository pagoRepository;
+    @Autowired
+    private ComprobanteRepository comprobanteRepository;
+    @Autowired
+    private CondicionTributariaRepository condicionTributariaRepository;
+    @Autowired
+    private TipoComprobanteRepository tipoComprobanteRepository;
 
-            // Extraer los datos necesarios del JSON
-            String cardNumber = jsonNode.get("datosTarjeta").get("numero").asText();
-            String expirationMonth = jsonNode.get("datosTarjeta").get("vencimiento").get("mes").asText();
-            String expirationYear = jsonNode.get("datosTarjeta").get("vencimiento").get("año").asText();
-             expirationYear = expirationYear.length() >= 2
-                    ? expirationYear.substring(expirationYear.length() - 2)
-                    : expirationYear;
-            String securityCode = jsonNode.get("datosTarjeta").get("cvv").asText();
-            String cardHolderName = jsonNode.get("datosCliente").get("nombreCliente").asText();
-            JsonNode cardHolderIdentificationNode = jsonNode.get("card_holder_identification");
-            String identificationType = "dni";
-            String identificationNumber = jsonNode.get("datosTarjeta").get("dni").asText();
-            // Construir un nuevo JSON con los datos necesarios
-            String nuevoJson = "{"
-                    + "\"card_number\": \"" + cardNumber + "\", "
-                    + "\"card_expiration_month\": \"" + expirationMonth + "\", "
-                    + "\"card_expiration_year\": \"" + expirationYear + "\", "
-                    + "\"security_code\": \"" + securityCode + "\", "
-                    + "\"card_holder_name\": \"" + cardHolderName + "\", "
-                    + "\"card_holder_identification\": {"
-                    + "  \"type\": \"" + identificationType + "\", "
-                    + "  \"number\": \"" + identificationNumber + "\""
-                    + "}"
-                    + "}";
-
-            // Construir el encabezado para la API externa
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("apikey", "b192e4cb99564b84bf5db5550112adea");
-
-            // Construir la entidad HTTP con los datos y el encabezado
-            HttpEntity<String> externalApiRequestEntity = new HttpEntity<>(nuevoJson, headers);
-
-            // URL de la API externa
-            String externalApiUrl = "https://developers.decidir.com/api/v2/tokens";
-
-            // Realizar la petición a la API externa
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> externalApiResponseEntity = restTemplate.postForEntity(
-                    externalApiUrl,
-                    externalApiRequestEntity,
-                    String.class
-            );
-
-            // Devolver la respuesta de la API externa al frontend junto con la respuesta original
-            String responseBody = externalApiResponseEntity.getBody();
-            JsonNode respuestaJson= objectMapper.readTree(responseBody);
-            return ResponseEntity.ok(respuestaJson);
-
-        } catch (Exception e) {
-            e.printStackTrace(); // Manejar las excepciones según tus necesidades
-            return ResponseEntity.status(500).body("Error al procesar la solicitud");
-        }
-    }
-    @PostMapping("/realizarPago")
-    public ResponseEntity<?> solicitarToken(@RequestBody String requestBody) {
+    public ResponseEntity<String> solicitarToken(@RequestBody String requestBody) {
         try {
             // Convertir el cuerpo de la solicitud a un objeto JsonNode
             ObjectMapper objectMapper = new ObjectMapper();
@@ -126,14 +83,21 @@ public class ApiController {
 
             // Obtener la respuesta de la primera API
             String responseBody1 = externalApiResponseEntity1.getBody();
-            JsonNode respuestaJson1 = objectMapper.readTree(responseBody1);
+            //JsonNode respuestaJson1 = objectMapper.readTree(responseBody1);
 
-            
+            return ResponseEntity.ok(responseBody1);
 
+        } catch (Exception e) {
+            e.printStackTrace(); // Manejar las excepciones según tus necesidades
+            return ResponseEntity.status(500).body("Error al procesar la solicitud");
+        }
+
+    }
+    public ResponseEntity<String> confirmarPago(@RequestBody String requestBody, JsonNode respuestaJson1) {
+        try {
             //comienza api 2
-
-
-
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(requestBody);
 
             int longitudCodigo = 6;
             byte[] randomBytes = new byte[longitudCodigo];
@@ -175,7 +139,7 @@ public class ApiController {
 
             // URL de la segunda API externa
             String externalApiUrl2 = "https://developers.decidir.com/api/v2/payments";
-
+            RestTemplate restTemplate = new RestTemplate();
             // Realizar la petición a la segunda API externa
             ResponseEntity<String> externalApiResponseEntity2 = restTemplate.postForEntity(
                     externalApiUrl2,
@@ -187,7 +151,7 @@ public class ApiController {
             String responseBody2 = externalApiResponseEntity2.getBody();
             JsonNode respuestaJson2 = objectMapper.readTree(responseBody2);
 
-            return ResponseEntity.ok(respuestaJson2);
+            return ResponseEntity.ok(responseBody2);
 
         } catch (Exception e) {
             e.printStackTrace(); // Manejar las excepciones según tus necesidades
@@ -195,6 +159,47 @@ public class ApiController {
         }
     }
 
+    public void procesarVenta(JsonNode jsonNode) {
+        //monto
+        double amount = Double.parseDouble(jsonNode.get("montoTotal").asText());
+        //para cliente
+        int clienteId = Integer.parseInt(jsonNode.get("datosCliente").get("idCliente").asText());
+        Optional<Cliente> clienteOptional = clienteRepository.findById(clienteId);
+        Cliente cliente = clienteOptional.get();
 
+        //para comprobante
+
+        int condicionTributariaId = Integer.parseInt(jsonNode.get("condicionTributaria").get("id").asText());
+        int tipoComprobanteId = Integer.parseInt(jsonNode.get("condicionTributaria").get("tipoComprobante").get("id").asText());
+        Optional<CondicionTributaria> condicionTributariaOptional = condicionTributariaRepository.findById(condicionTributariaId);
+        CondicionTributaria condicionTributaria = condicionTributariaOptional.get();
+        Optional<TipoComprobante> tipoComprobanteOptional = tipoComprobanteRepository.findById(tipoComprobanteId);
+        TipoComprobante tipoComprobante = tipoComprobanteOptional.get();
+        Comprobante nuevoComprobante = new Comprobante();
+        nuevoComprobante.setTipoComprobante(tipoComprobante);
+        nuevoComprobante.setCondicionTributaria(condicionTributaria);
+        comprobanteRepository.save(nuevoComprobante);
+        //Pago
+        String tipoPagoStr = jsonNode.get("tipoPago").asText();
+        TipoPago tipoPago = TipoPago.fromDescripcion(tipoPagoStr);
+        Pago nuevoPago = new Pago();
+        nuevoPago.setFecha(LocalDate.now());
+        nuevoPago.setMonto(amount);
+        nuevoPago.setTipoPago(tipoPago);
+        pagoRepository.save(nuevoPago);
+
+
+        // Crear una nueva venta
+
+
+        Venta nuevaVenta = new Venta();
+        nuevaVenta.setFecha(LocalDate.now());
+        nuevaVenta.setTotal(amount);
+        nuevaVenta.setCliente(cliente);
+        nuevaVenta.setComprobante(nuevoComprobante);
+        nuevaVenta.setPago(nuevoPago);
+        ventaRepository.save(nuevaVenta);
+
+    }
 
 }
