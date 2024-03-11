@@ -97,7 +97,7 @@ public class RealizarVentaController {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(requestBody);
             String tipoPago = jsonNode.get("tipoPago").asText();
-            if ( tipoPago!="Efectivo") {
+            if ( !tipoPago.equals("Efectivo")) {
 
                 //llamo para solicitar el Token
                 ResponseEntity<String> responseTokenPago = ventaService.solicitarToken(requestBody);
@@ -111,7 +111,7 @@ public class RealizarVentaController {
                     respuesta="success";
                 }
             }
-            if ( tipoPago=="Efectivo") {
+            if ( tipoPago.equals("Efectivo")) {
                 ventaService.procesarVenta(jsonNode);
                 respuesta="success";
             }
