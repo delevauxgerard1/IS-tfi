@@ -12,8 +12,9 @@ import java.util.List;
 @Service
 public class CondicionTributariaService {
 
-    private final CondicionTributariaRepository  condicionTributariaRepository;
     @Autowired
+    private final CondicionTributariaRepository  condicionTributariaRepository;
+
     public CondicionTributariaService(CondicionTributariaRepository condicionTributariaRepository) {
         this.condicionTributariaRepository = condicionTributariaRepository;
     }

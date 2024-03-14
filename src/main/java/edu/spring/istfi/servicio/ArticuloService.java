@@ -8,8 +8,6 @@ import edu.spring.istfi.repository.ArticuloRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +32,7 @@ public class ArticuloService {
     public Articulo buscarArticuloPorCodigo(long codigo) {
         return articuloRepository.findByCodigo(codigo);
     }
+
     public List<Articulo> buscarPorDescripcion(String descripcion) {
         return articuloRepository.findByDescripcionContaining(descripcion);
     }
@@ -59,6 +58,7 @@ public class ArticuloService {
         }
         return Collections.emptyList();
     }
+
     public List<Talle> obtenerTallesDeArticuloPorDescripcion(String descripcion) {
         List<Articulo> articulos = articuloRepository.findByDescripcionContaining(descripcion);
         List<Talle> talles = new ArrayList<>();
@@ -67,6 +67,7 @@ public class ArticuloService {
         }
         return talles;
     }
+
     public List<Color> obtenerColoresDeArticuloPorDescripcion(String descripcion) {
         List<Articulo> articulos = articuloRepository.findByDescripcionContaining(descripcion);
         List<Color> colores = new ArrayList<>();
@@ -75,6 +76,7 @@ public class ArticuloService {
         }
         return colores;
     }
+
     public Stock obtenerStock(long idArticulo, int idColor, int idTalle) {
         return articuloRepository.findStock(idArticulo, idColor, idTalle);
     }

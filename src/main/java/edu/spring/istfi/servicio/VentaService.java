@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Base64;
@@ -21,17 +22,22 @@ import java.util.Optional;
 @Service
 public class VentaService {
     @Autowired
+    private ArticuloService articuloService;
+    @Autowired
     private VentaRepository ventaRepository;
     @Autowired
     private ClienteRepository clienteRepository;
     @Autowired
     private PagoRepository pagoRepository;
     @Autowired
+    private LineaVentaRepository lineaVentaRepository;
+    @Autowired
     private ComprobanteRepository comprobanteRepository;
     @Autowired
     private CondicionTributariaRepository condicionTributariaRepository;
     @Autowired
     private TipoComprobanteRepository tipoComprobanteRepository;
+    private static final Logger logger = LoggerFactory.getLogger(VentaService.class);
 
     public ResponseEntity<String> solicitarToken(@RequestBody String requestBody) {
         try {
@@ -93,6 +99,7 @@ public class VentaService {
         }
 
     }
+
     public ResponseEntity<String> confirmarPago(@RequestBody String requestBody, JsonNode respuestaJson1) {
         try {
             //comienza api 2
@@ -154,52 +161,104 @@ public class VentaService {
             return ResponseEntity.ok(responseBody2);
 
         } catch (Exception e) {
-            e.printStackTrace(); // Manejar las excepciones según tus necesidades
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Error al procesar la solicitud");
         }
     }
 
     public void procesarVenta(JsonNode jsonNode) {
-        //monto
-        double amount = Double.parseDouble(jsonNode.get("montoTotal").asText());
-        //para cliente
-        int clienteId = Integer.parseInt(jsonNode.get("datosCliente").get("idCliente").asText());
-        Optional<Cliente> clienteOptional = clienteRepository.findById(clienteId);
-        Cliente cliente = clienteOptional.get();
+        try {
+            // Monto
+            double amount = Double.parseDouble(jsonNode.get("montoTotal").asText());
+            //para cliente
+            int clienteId = Integer.parseInt(jsonNode.get("datosCliente").get("idCliente").asText());
+            Optional<Cliente> clienteOptional = clienteRepository.findById(clienteId);
+            Cliente cliente = clienteOptional.get();
 
-        //para comprobante
+            // Para comprobante
 
-        int condicionTributariaId = Integer.parseInt(jsonNode.get("condicionTributaria").get("id").asText());
-        int tipoComprobanteId = Integer.parseInt(jsonNode.get("condicionTributaria").get("tipoComprobante").get("id").asText());
-        Optional<CondicionTributaria> condicionTributariaOptional = condicionTributariaRepository.findById(condicionTributariaId);
-        CondicionTributaria condicionTributaria = condicionTributariaOptional.get();
-        Optional<TipoComprobante> tipoComprobanteOptional = tipoComprobanteRepository.findById(tipoComprobanteId);
-        TipoComprobante tipoComprobante = tipoComprobanteOptional.get();
-        Comprobante nuevoComprobante = new Comprobante();
-        nuevoComprobante.setTipoComprobante(tipoComprobante);
-        nuevoComprobante.setCondicionTributaria(condicionTributaria);
-        comprobanteRepository.save(nuevoComprobante);
-        //Pago
-        String tipoPagoStr = jsonNode.get("tipoPago").asText();
-        TipoPago tipoPago = TipoPago.fromDescripcion(tipoPagoStr);
-        Pago nuevoPago = new Pago();
-        nuevoPago.setFecha(LocalDate.now());
-        nuevoPago.setMonto(amount);
-        nuevoPago.setTipoPago(tipoPago);
-        pagoRepository.save(nuevoPago);
+            int condicionTributariaId = Integer.parseInt(jsonNode.get("condicionTributaria").get("id").asText());
+            int tipoComprobanteId = Integer.parseInt(jsonNode.get("condicionTributaria").get("tipoComprobante").get("id").asText());
+            Optional<CondicionTributaria> condicionTributariaOptional = condicionTributariaRepository.findById(condicionTributariaId);
+            CondicionTributaria condicionTributaria = condicionTributariaOptional.get();
+            Optional<TipoComprobante> tipoComprobanteOptional = tipoComprobanteRepository.findById(tipoComprobanteId);
+            TipoComprobante tipoComprobante = tipoComprobanteOptional.get();
+            Comprobante nuevoComprobante = new Comprobante();
+            nuevoComprobante.setTipoComprobante(tipoComprobante);
+            nuevoComprobante.setCondicionTributaria(condicionTributaria);
+            comprobanteRepository.save(nuevoComprobante);
 
+            // Pago
+            String tipoPagoStr = jsonNode.get("tipoPago").asText();
+            TipoPago tipoPago = TipoPago.fromDescripcion(tipoPagoStr);
+            Pago nuevoPago = new Pago();
+            nuevoPago.setFecha(LocalDate.now());
+            nuevoPago.setMonto(amount);
+            nuevoPago.setTipoPago(tipoPago);
+            pagoRepository.save(nuevoPago);
 
-        // Crear una nueva venta
+            // Crear una nueva venta
+            Venta nuevaVenta = new Venta();
+            nuevaVenta.setFecha(LocalDate.now());
+            nuevaVenta.setTotal(amount);
+            nuevaVenta.setCliente(cliente);
+            nuevaVenta.setComprobante(nuevoComprobante);
+            nuevaVenta.setPago(nuevoPago);
+            ventaRepository.save(nuevaVenta);
 
+            long ventaId = nuevaVenta.getId();
 
-        Venta nuevaVenta = new Venta();
-        nuevaVenta.setFecha(LocalDate.now());
-        nuevaVenta.setTotal(amount);
-        nuevaVenta.setCliente(cliente);
-        nuevaVenta.setComprobante(nuevoComprobante);
-        nuevaVenta.setPago(nuevoPago);
-        ventaRepository.save(nuevaVenta);
+            // Crear las líneas de ventas
+            JsonNode lineasDeVentaNode = jsonNode.get("lineasDeVenta");
 
+            lineasDeVentaNode.fields().forEachRemaining(entry -> {
+                String key = entry.getKey(); // Nombre de la línea de venta, por ejemplo, "lineaDeVenta0"
+                JsonNode lineaDeVentaNode = entry.getValue(); // Nodo JSON que representa la línea de venta
+
+                // Obtener los datos específicos de cada línea de venta
+                int cantidad = lineaDeVentaNode.get("cantidad").asInt();
+                String descripcion = lineaDeVentaNode.get("descripcion").asText();
+                int id = lineaDeVentaNode.get("id").asInt();
+                int idColor = lineaDeVentaNode.get("idColor").asInt();
+                String color = lineaDeVentaNode.get("color").asText();
+                int idTalle = lineaDeVentaNode.get("idTalle").asInt();
+                String talle = lineaDeVentaNode.get("talle").asText();
+                String marca = lineaDeVentaNode.get("marca").asText();
+                float subTotalLineaVenta = (float) lineaDeVentaNode.get("totalVenta").asDouble();
+
+                // Usar el logger para registrar los valores
+                logger.info("Cantidad: {}", cantidad);
+                logger.info("Descripción: {}", descripcion);
+                logger.info("ID: {}", id);
+                logger.info("ID de color: {}", idColor);
+                logger.info("Color: {}", color);
+                logger.info("ID de talle: {}", idTalle);
+                logger.info("Talle: {}", talle);
+                logger.info("Marca: {}", marca);
+                logger.info("Subtotal de línea de venta: {}", subTotalLineaVenta);
+
+                Stock stock = articuloService.obtenerStock(id, idColor, idTalle);
+                logger.info("Cantidad de stock: {}", stock.getCantidad());
+
+                if (stock.getCantidad() > 0 && stock.getCantidad() >= cantidad) {
+                    int stockCantidad = stock.getCantidad();
+                    int nuevaCantidad = stockCantidad - cantidad;
+                    stock.setCantidad(nuevaCantidad);
+
+                    LineaVenta nuevaLineaVenta = new LineaVenta();
+                    nuevaLineaVenta.setCantidad(cantidad);
+                    nuevaLineaVenta.setSubtotal(subTotalLineaVenta);
+                    nuevaLineaVenta.setVenta(nuevaVenta);
+                    nuevaLineaVenta.setStock(stock);
+
+                    lineaVentaRepository.save(nuevaLineaVenta);
+                } else {
+                    logger.error("No hay suficiente stock disponible para la venta");
+                }
+            });
+        } catch (Exception e) {
+
+        }
     }
 
 }

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente,Integer> {
 
-
     @Query("SELECT DISTINCT c FROM Cliente c " +
             "WHERE c.cuit = :cuit")
     Cliente findByDni(@Param("cuit") long cuit);
+
 }

@@ -11,23 +11,18 @@ import edu.spring.istfi.servicio.VentaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 //http://localhost:8080/tfib/
 @RequestMapping("tfib")
 @CrossOrigin(value = "http://localhost:5173")
 public class RealizarVentaController {
+
     private static final Logger logger = LoggerFactory.getLogger(RealizarVentaController.class);
 
     @GetMapping("/listarTipoPago")
@@ -38,6 +33,8 @@ public class RealizarVentaController {
                 TipoPago.TARJETA_CREDITO.getDescripcion()
         );
     }
+
+    //Condición tributaria
     @Autowired
     private CondicionTributariaService condicionTributariaService;
 
@@ -46,16 +43,17 @@ public class RealizarVentaController {
         return condicionTributariaService.getAllTributaryConditions();
     }
 
-    //clientes consultas
+    //Clientes
     @Autowired
     private ClienteService clienteService;
+
     @GetMapping("/buscarCliente/{cuit}")
     public ResponseEntity<Cliente> buscarClienteDni(@PathVariable long cuit) {
         Cliente cliente = clienteService.buscarClienteporCuit(cuit);
         return ResponseEntity.ok(cliente);
     }
 
-    //articulos consultas
+    //Artículos consultas
     @Autowired
     private ArticuloService articuloService;
 
@@ -68,11 +66,13 @@ public class RealizarVentaController {
     public List<Articulo> buscarArticulosPorDescripcion(@PathVariable String descripcion) {
         return articuloService.buscarPorDescripcion(descripcion);
     }
+
     @GetMapping("/obtenerTallesPorDescripcion/{descripcion}")
     public ResponseEntity<List<Talle>> obtenerTallesDeArticuloPorDescripcion(@PathVariable String descripcion) {
         List<Talle> talles = articuloService.obtenerTallesDeArticuloPorDescripcion(descripcion);
         return ResponseEntity.ok(talles);
     }
+
     @GetMapping("/obtenerColoresPorDescripcion/{descripcion}")
     public ResponseEntity<List<Color>> obtenerColoresDeArticuloPorDescripcion(@PathVariable String descripcion) {
         List<Color> colores = articuloService.obtenerColoresDeArticuloPorDescripcion(descripcion);
@@ -85,11 +85,12 @@ public class RealizarVentaController {
         return ResponseEntity.ok(stock);
     }
 
-    private final VentaService ventaService;
     @Autowired
+    private final VentaService ventaService;
     public RealizarVentaController(VentaService ventaService) {
         this.ventaService = ventaService;
     }
+
     @PostMapping("/realizarPago")
     public ResponseEntity<?> realizarPago(@RequestBody String requestBody) {
         try {
