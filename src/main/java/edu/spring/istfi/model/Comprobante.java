@@ -8,14 +8,13 @@ import java.util.Set;
 
 @Entity
 public class Comprobante {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @OneToMany(mappedBy = "comprobante", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Venta> ventas = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "tipo_comprobante_id")
     private TipoComprobante tipoComprobante;

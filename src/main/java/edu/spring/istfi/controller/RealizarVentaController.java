@@ -13,18 +13,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 import java.util.List;
 
-@RestController
 //http://localhost:8080/tfib/
+@RestController
 @RequestMapping("tfib")
 @CrossOrigin(value = "http://localhost:5173")
 public class RealizarVentaController {
 
     private static final Logger logger = LoggerFactory.getLogger(RealizarVentaController.class);
 
+    //Tipos de pago
     @GetMapping("/listarTipoPago")
     public List<String> listarTiposPago() {
         return Arrays.asList(
@@ -48,7 +48,7 @@ public class RealizarVentaController {
     private ClienteService clienteService;
 
     @GetMapping("/buscarCliente/{cuit}")
-    public ResponseEntity<Cliente> buscarClienteDni(@PathVariable long cuit) {
+    public ResponseEntity<Cliente> buscarClienteCuit(@PathVariable long cuit) {
         Cliente cliente = clienteService.buscarClienteporCuit(cuit);
         return ResponseEntity.ok(cliente);
     }
@@ -80,11 +80,12 @@ public class RealizarVentaController {
     }
 
     @GetMapping("/obtenerStock/{idArticulo}/{idColor}/{idTalle}")
-    public ResponseEntity<Stock> obtenerColoresDeArticuloPorDescripcion(@PathVariable Long idArticulo, @PathVariable int idColor, @PathVariable int idTalle) {
+    public ResponseEntity<Stock> obtenerStock(@PathVariable Long idArticulo, @PathVariable int idColor, @PathVariable int idTalle) {
         Stock stock = articuloService.obtenerStock(idArticulo,idColor,idTalle);
         return ResponseEntity.ok(stock);
     }
 
+    //Ventas
     @Autowired
     private final VentaService ventaService;
     public RealizarVentaController(VentaService ventaService) {

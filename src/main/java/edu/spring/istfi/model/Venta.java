@@ -13,7 +13,6 @@ public class Venta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private LocalDate fecha;
-   // private long numComprobante;
     private double total;
     @ManyToOne
     @JoinColumn(name = "cliente_id")
@@ -24,7 +23,6 @@ public class Venta {
     @OneToOne
     @JoinColumn(name = "pago_id")
     private Pago pago;
-
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<LineaVenta> lineaVentas = new HashSet<>();
@@ -52,10 +50,10 @@ public class Venta {
     public Set<LineaVenta> getLineaVentas() {
         return lineaVentas;
     }
+
     public void setLineaVentas(Set<LineaVenta> lineaVentas) {
         this.lineaVentas = lineaVentas;
     }
-
 
     public LocalDate getFecha() {
         return fecha;
@@ -64,7 +62,6 @@ public class Venta {
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
-
 
     public void setTotal(double total) {
         this.total = total;
@@ -88,7 +85,6 @@ public class Venta {
 
     public Venta() {
     }
-
 
     public Venta(int id, LocalDate fecha, double total, Cliente cliente, Comprobante comprobante, Pago pago, Set<LineaVenta> lineaVentas) {
         this.id = id;

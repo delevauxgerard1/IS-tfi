@@ -3,6 +3,7 @@ package edu.spring.istfi.model;
 import jakarta.persistence.*;
 @Entity
 public class LineaVenta {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -14,7 +15,7 @@ public class LineaVenta {
     @ManyToOne
     @JoinColumn(name = "venta_id")
     private Venta venta;
-    // Constructor sin argumentos
+
     public LineaVenta() {
     }
 
@@ -34,9 +35,6 @@ public class LineaVenta {
         this.venta = venta;
     }
 
-    // Constructor con todos los campos como parámetros
-
-
     public LineaVenta(int id, int cantidad, float subtotal, Stock stock, Venta venta) {
         this.id = id;
         this.cantidad = cantidad;
@@ -45,7 +43,6 @@ public class LineaVenta {
         this.venta = venta;
     }
 
-    // Getters y setters
     public int getId() {
         return id;
     }
@@ -69,6 +66,7 @@ public class LineaVenta {
     public void setSubtotal(float subtotal) {
         this.subtotal = subtotal;
     }
+
     @Override
     public String toString() {
         return "Linea de Venta [Cantidad: " + cantidad + ", Subtotal: $" + subtotal + "]";

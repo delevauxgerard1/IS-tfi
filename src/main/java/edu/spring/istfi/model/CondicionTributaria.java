@@ -17,7 +17,6 @@ public class CondicionTributaria {
     @JoinColumn(name = "tipo_comprobante_id")
     private TipoComprobante tipoComprobante;
 
-
     public CondicionTributaria() {
     }
 

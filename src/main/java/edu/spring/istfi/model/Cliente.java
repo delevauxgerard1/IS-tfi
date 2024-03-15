@@ -8,12 +8,12 @@ import java.util.Set;
 
 @Entity
 public class Cliente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private long cuit;
     private String nombre;
-
     private String domicilio;
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -21,9 +21,6 @@ public class Cliente {
 
     public Cliente() {
     }
-
-    // Constructor
-
 
     public Cliente(int id, long cuit, String nombre, String domicilio, Set<Venta> venta) {
         this.id = id;
@@ -49,7 +46,6 @@ public class Cliente {
         this.domicilio = domicilio;
     }
 
-    // Getters y Setters
     public int getId() {
         return id;
     }
