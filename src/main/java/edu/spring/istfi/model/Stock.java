@@ -12,15 +12,12 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int cantidad;
-
-
     @ManyToOne
     @JoinColumn(name = "articulo_id")
     private Articulo articulo;
     @ManyToOne
     @JoinColumn(name = "color_id")
     private Color color;
-
     @ManyToOne
     @JoinColumn(name = "talle_id")
     private Talle talle;
@@ -34,11 +31,12 @@ public class Stock {
         this.lineaVentas = lineaVentas;
     }
 
-    // Constructor sin argumentos (predeterminado)
     public Stock() {
     }
-    // Constructor con todos los campos como parámetros
 
+    public Stock(int cantidad) {
+        this.cantidad = cantidad;
+    }
 
     public Stock(int id, int cantidad, Articulo articulo, Color color, Talle talle) {
         this.id = id;
@@ -48,7 +46,6 @@ public class Stock {
         this.talle = talle;
     }
 
-    // Getters y setters
     public int getId() {
         return id;
     }
@@ -64,6 +61,7 @@ public class Stock {
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
+
     public Articulo getArticulo() {
         return articulo;
     }

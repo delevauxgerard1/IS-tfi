@@ -68,11 +68,9 @@ public class Articulo {
         return marca;
     }
 
-    // Constructor sin argumentos necesario para JPA
     public Articulo() {
     }
 
-    // Constructor con argumentos
     public Articulo(String descripcion, double costo, double margenDeGanancia) {
         this.codigo = codigo;
         this.descripcion = descripcion;
@@ -150,8 +148,6 @@ public class Articulo {
         // Implementa la lógica para calcular el costo con IVA
         return getNetoGravado() * (1 + (iva / 100));
     }
-
-
 
     @Override
     public String toString() {

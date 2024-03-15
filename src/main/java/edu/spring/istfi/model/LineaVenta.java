@@ -34,9 +34,6 @@ public class LineaVenta {
         this.venta = venta;
     }
 
-    // Constructor con todos los campos como parámetros
-
-
     public LineaVenta(int id, int cantidad, float subtotal, Stock stock, Venta venta) {
         this.id = id;
         this.cantidad = cantidad;
@@ -45,7 +42,6 @@ public class LineaVenta {
         this.venta = venta;
     }
 
-    // Getters y setters
     public int getId() {
         return id;
     }

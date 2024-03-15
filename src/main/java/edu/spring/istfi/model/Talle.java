@@ -24,7 +24,7 @@ public class Talle {
     public void setStocks(Set<Stock> stocks) {
         this.stocks = stocks;
     }
-    // Métodos getter y setter para articulos
+
     public Set<Articulo> getArticulos() {
         return articulos;
     }
@@ -32,9 +32,10 @@ public class Talle {
     public void setArticulos(Set<Articulo> articulos) {
         this.articulos = articulos;
     }
+
     public Talle() {
-        // Constructor sin argumentos necesario para JPA/Hibernate
     }
+
     public Talle(int id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
@@ -43,7 +44,6 @@ public class Talle {
     public Talle(String descripcion) {
         this.descripcion = descripcion;
     }
-
 
     public int getId() {
         return id;

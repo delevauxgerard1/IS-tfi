@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class RealizarVentaController {
         return ResponseEntity.ok(cliente);
     }
 
-    //Artículos consultas
+    //Artículos
     @Autowired
     private ArticuloService articuloService;
 
@@ -80,7 +79,7 @@ public class RealizarVentaController {
     }
 
     @GetMapping("/obtenerStock/{idArticulo}/{idColor}/{idTalle}")
-    public ResponseEntity<Stock> obtenerColoresDeArticuloPorDescripcion(@PathVariable Long idArticulo, @PathVariable int idColor, @PathVariable int idTalle) {
+    public ResponseEntity<Stock> obtenerStock(@PathVariable Long idArticulo, @PathVariable int idColor, @PathVariable int idTalle) {
         Stock stock = articuloService.obtenerStock(idArticulo,idColor,idTalle);
         return ResponseEntity.ok(stock);
     }
@@ -100,26 +99,30 @@ public class RealizarVentaController {
             String tipoPago = jsonNode.get("tipoPago").asText();
             if ( !tipoPago.equals("Efectivo")) {
 
-                //llamo para solicitar el Token
+                //Llamado para solicitar token
                 ResponseEntity<String> responseTokenPago = ventaService.solicitarToken(requestBody);
                 JsonNode respuestaJson1 = objectMapper.readTree((String) responseTokenPago.getBody());
 
+                //Llamado para confirmar pago
                 ResponseEntity<String> responseConfirmarPago = ventaService.confirmarPago(requestBody,respuestaJson1);
                 JsonNode respuestaJson2 = objectMapper.readTree((String) responseConfirmarPago.getBody());
                 if (respuestaJson2.has("status") && respuestaJson2.get("status").asText().equals("approved") ) {
 
+                    //Llamado para procesar la venta
                     ventaService.procesarVenta(jsonNode);
                     respuesta="success";
                 }
             }
             if ( tipoPago.equals("Efectivo")) {
+
+                //Procesar la venta en caso de efectivo
                 ventaService.procesarVenta(jsonNode);
                 respuesta="success";
             }
             return ResponseEntity.ok(respuesta);
 
         } catch (Exception e) {
-            e.printStackTrace(); // Manejar las excepciones según tus necesidades
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Error al procesar la solicitud");
         }
     }

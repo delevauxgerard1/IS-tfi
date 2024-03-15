@@ -244,7 +244,6 @@ public class VentaService {
                     int stockCantidad = stock.getCantidad();
                     int nuevaCantidad = stockCantidad - cantidad;
                     stock.setCantidad(nuevaCantidad);
-
                     LineaVenta nuevaLineaVenta = new LineaVenta();
                     nuevaLineaVenta.setCantidad(cantidad);
                     nuevaLineaVenta.setSubtotal(subTotalLineaVenta);

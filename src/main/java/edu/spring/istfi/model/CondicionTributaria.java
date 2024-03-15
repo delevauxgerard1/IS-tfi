@@ -8,7 +8,6 @@ import java.util.Set;
 
 @Entity
 public class CondicionTributaria {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -16,7 +15,6 @@ public class CondicionTributaria {
     @ManyToOne
     @JoinColumn(name = "tipo_comprobante_id")
     private TipoComprobante tipoComprobante;
-
 
     public CondicionTributaria() {
     }

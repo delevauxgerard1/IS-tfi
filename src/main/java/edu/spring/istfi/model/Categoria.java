@@ -6,13 +6,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 @Entity
 public class Categoria {
-    public Categoria() {
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String descripcion;
+
+    public Categoria() {
+    }
 
     public Categoria(int id, String descripcion) {
         this.id = id;
