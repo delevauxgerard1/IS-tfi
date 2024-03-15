@@ -98,25 +98,32 @@ public class RealizarVentaController {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(requestBody);
             String tipoPago = jsonNode.get("tipoPago").asText();
-            if ( !tipoPago.equals("Efectivo")) {
+            String comprobar=ventaService.comprobarStock(jsonNode);
 
-                //llamo para solicitar el Token
-                ResponseEntity<String> responseTokenPago = ventaService.solicitarToken(requestBody);
-                JsonNode respuestaJson1 = objectMapper.readTree((String) responseTokenPago.getBody());
+            if (comprobar.equals("success")){
+                if ( !tipoPago.equals("Efectivo")) {
 
-                ResponseEntity<String> responseConfirmarPago = ventaService.confirmarPago(requestBody,respuestaJson1);
-                JsonNode respuestaJson2 = objectMapper.readTree((String) responseConfirmarPago.getBody());
-                if (respuestaJson2.has("status") && respuestaJson2.get("status").asText().equals("approved") ) {
+                    //llamo para solicitar el Token
+                    ResponseEntity<String> responseTokenPago = ventaService.solicitarToken(requestBody);
+                    JsonNode respuestaJson1 = objectMapper.readTree((String) responseTokenPago.getBody());
 
+                    ResponseEntity<String> responseConfirmarPago = ventaService.confirmarPago(requestBody,respuestaJson1);
+                    JsonNode respuestaJson2 = objectMapper.readTree((String) responseConfirmarPago.getBody());
+                    if (respuestaJson2.has("status") && respuestaJson2.get("status").asText().equals("approved") ) {
+
+                        ventaService.procesarVenta(jsonNode);
+                        respuesta="success";
+                    }
+                }
+                if ( tipoPago.equals("Efectivo")) {
                     ventaService.procesarVenta(jsonNode);
                     respuesta="success";
                 }
+                return ResponseEntity.ok(respuesta);
+            }else {
+                respuesta="Stock insuficiente";
+                return ResponseEntity.ok(respuesta);
             }
-            if ( tipoPago.equals("Efectivo")) {
-                ventaService.procesarVenta(jsonNode);
-                respuesta="success";
-            }
-            return ResponseEntity.ok(respuesta);
 
         } catch (Exception e) {
             e.printStackTrace(); // Manejar las excepciones según tus necesidades
