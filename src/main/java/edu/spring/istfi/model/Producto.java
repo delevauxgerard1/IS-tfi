@@ -1,6 +1,7 @@
 package edu.spring.istfi.model;
 
 public class Producto {
+    
     private int id;
     private int stock;
 

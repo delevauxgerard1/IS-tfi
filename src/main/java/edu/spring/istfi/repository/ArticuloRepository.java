@@ -12,11 +12,6 @@ import java.util.List;
 @Repository
 public interface ArticuloRepository extends JpaRepository<Articulo, Long> {
 
-    //Articulo findByCodigo(long codigo);
-
-    //List<Articulo> findByDescripcionContaining(String descripcion);
-
-    //consultas con talle y color
     @Query("SELECT DISTINCT a FROM Articulo a " +
             "WHERE a.codigo = :codigo")
     Articulo findByCodigo(@Param("codigo") long codigo);
@@ -24,12 +19,6 @@ public interface ArticuloRepository extends JpaRepository<Articulo, Long> {
     @Query("SELECT DISTINCT a FROM Articulo a " +
             "WHERE LOWER(a.descripcion) LIKE LOWER(CONCAT('%', :descripcion, '%'))")
     List<Articulo> findByDescripcionContaining(@Param("descripcion") String descripcion);
-
-    @Query("SELECT DISTINCT a FROM Articulo a " +
-            "LEFT JOIN FETCH a.talles " +
-            "LEFT JOIN FETCH a.colores " +
-            "WHERE LOWER(a.descripcion) LIKE LOWER(CONCAT('%', :descripcion, '%'))")
-    List<Articulo> findByDescripcionContainingWithTallesAndColores(@Param("descripcion") String descripcion);
 
     @Query("SELECT s FROM Stock s " +
             "WHERE s.articulo.id = :idArticulo " +
@@ -41,5 +30,14 @@ public interface ArticuloRepository extends JpaRepository<Articulo, Long> {
             @Param("idTalle") int idTalle
     );
 
+    //Articulo findByCodigo(long codigo);
+
+    //List<Articulo> findByDescripcionContaining(String descripcion);
+
+    @Query("SELECT DISTINCT a FROM Articulo a " +
+            "LEFT JOIN FETCH a.talles " +
+            "LEFT JOIN FETCH a.colores " +
+            "WHERE LOWER(a.descripcion) LIKE LOWER(CONCAT('%', :descripcion, '%'))")
+    List<Articulo> findByDescripcionContainingWithTallesAndColores(@Param("descripcion") String descripcion);
 }
 

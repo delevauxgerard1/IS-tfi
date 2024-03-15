@@ -1,6 +1,7 @@
 package edu.spring.istfi.model;
 
 public enum TipoPago {
+
     EFECTIVO("Efectivo"),
     TARJETA_DEBITO("Tarjeta débito"),
     TARJETA_CREDITO("Tarjeta crédito");

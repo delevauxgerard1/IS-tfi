@@ -6,15 +6,14 @@ import java.time.LocalDate;
 import java.util.Date;
 @Entity
 public class Pago {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private LocalDate fecha;
     private double monto;
     @Enumerated(EnumType.STRING)
     private TipoPago tipoPago;
-
     @OneToOne(mappedBy = "pago")
     private Venta venta;
 
@@ -28,8 +27,6 @@ public class Pago {
         this.tipoPago = tipoPago;
         this.venta = venta;
     }
-
-    // Getters y setters
 
     public TipoPago getTipoPago() {
         return tipoPago;

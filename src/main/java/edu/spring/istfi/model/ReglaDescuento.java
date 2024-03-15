@@ -20,7 +20,5 @@ public class ReglaDescuento {
             return total * porcentajeMayor;
         }
         return 0;
-
-
-
-    }}
+    }
+}

@@ -13,7 +13,6 @@ public class TipoComprobante {
     private int id;
     private String descripcion;
 
-
     public TipoComprobante() {
     }
 
@@ -23,10 +22,10 @@ public class TipoComprobante {
 
     }
 
-
     public String getDescripcion() {
         return descripcion;
     }
+
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }

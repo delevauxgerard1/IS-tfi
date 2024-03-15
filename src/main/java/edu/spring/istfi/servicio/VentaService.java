@@ -2,6 +2,9 @@ package edu.spring.istfi.servicio;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.spring.istfi.model.*;
 import edu.spring.istfi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -259,6 +262,58 @@ public class VentaService {
         } catch (Exception e) {
 
         }
+    }
+    public String comprobarStock(JsonNode jsonNode){
+
+        JsonNode lineasDeVentaNode = jsonNode.get("lineasDeVenta");
+        ObjectNode resultado = JsonNodeFactory.instance.objectNode();
+        resultado.put("comprobacion", "success");
+        ArrayNode lineasDeVentaArray = JsonNodeFactory.instance.arrayNode(); // Array JSON para almacenar las líneas de venta
+
+        lineasDeVentaNode.fields().forEachRemaining(entry -> {
+            ObjectNode lineaDeVentaJson = JsonNodeFactory.instance.objectNode(); // Objeto JSON para cada línea de venta
+
+            String key = entry.getKey(); // Nombre de la línea de venta, por ejemplo, "lineaDeVenta0"
+            JsonNode lineaDeVentaNode = entry.getValue(); // Nodo JSON que representa la línea de venta
+
+            // Obtener los datos específicos de cada línea de venta
+            int cantidad = lineaDeVentaNode.get("cantidad").asInt();
+            String descripcion = lineaDeVentaNode.get("descripcion").asText();
+            int id = lineaDeVentaNode.get("id").asInt();
+            int idColor = lineaDeVentaNode.get("idColor").asInt();
+            String color = lineaDeVentaNode.get("color").asText();
+            int idTalle = lineaDeVentaNode.get("idTalle").asInt();
+            String talle = lineaDeVentaNode.get("talle").asText();
+            String marca = lineaDeVentaNode.get("marca").asText();
+            float subTotalLineaVenta = (float) lineaDeVentaNode.get("totalVenta").asDouble();
+
+            // Usar el logger para registrar los valores
+            logger.info("Cantidad: {}", cantidad);
+            logger.info("Descripción: {}", descripcion);
+            logger.info("ID: {}", id);
+            logger.info("ID de color: {}", idColor);
+            logger.info("Color: {}", color);
+            logger.info("ID de talle: {}", idTalle);
+            logger.info("Talle: {}", talle);
+            logger.info("Marca: {}", marca);
+            logger.info("Subtotal de línea de venta: {}", subTotalLineaVenta);
+
+            Stock stock = articuloService.obtenerStock(id, idColor, idTalle);
+            logger.info("Cantidad de stock: {}", stock.getCantidad());
+
+            if ( stock.getCantidad() >= cantidad) {
+                // Si hay suficiente stock, puedes hacer algo aquí si es necesario
+            } else {
+                resultado.put("comprobacion", "failed"); // Agrega la comprobación al resultado
+                return; // Termina el procesamiento
+            }
+
+        });
+
+        // Devolver el resultado como una cadena JSON
+        return resultado.toString();
+
+
     }
 
 }
